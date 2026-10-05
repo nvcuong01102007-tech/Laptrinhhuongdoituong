@@ -1,111 +1,135 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <string>
+
 using namespace std;
 
-class XeHoi;
+/*  1. Lớp HANG */
+class HANG {
+protected:
+    string MaHang;
+    string TenHang;
+    double Gia;
 
-class Date {
-    private: 
-    int day;
-    int month;
-    int year;
-    public: 
-    void nhap() {
-        cout << "Nhap ngay: ";
-        cin >> day;
-        cout << "Nhap thang: ";
-        cin >> month;
-        cout << "Nhap nam: ";
-        cin >> year;
+public:
+    void Nhap() {
+        cout << "  - Nhap ma hang: ";
+        getline(cin, MaHang);
+        cout << "  - Nhap ten hang: ";
+        getline(cin, TenHang);
+        cout << "  - Nhap gia: ";
+        cin >> Gia;
+        cin.ignore();
     }
-    void xuat() {
-        cout << day << "/" << month << "/" << year;
+
+    void Xuat() {
+        cout << "Ma hang: " << MaHang << " | Ten hang: " << TenHang << " | Gia: " << Gia << endl;
     }
-    friend class XeHoi;
 };
 
-class XeHoi {
-    private:
-    char nhanHieu[30];
-    char hangSanXuat[30];
-    char kieuDang[30];
-    char mauSon[30];
-    Date namSanXuat;
-    char xuatXu[30];
-    double giaBan;
-    public: 
-    void nhap() {
-        cin.ignore();
-        cout << "Nhap nhan hieu: "; cin.getline(nhanHieu, 30);
-        cout << "Nhap hang san xuat: "; cin.getline(hangSanXuat, 30);
-        cout << "Nhap kieu dang: "; cin.getline(kieuDang, 30);
-        cout << "Nhap mau son: "; cin.getline(mauSon, 30);
-        cout << "Nhap nam san xuat:\n";
-        namSanXuat.nhap();
-        cin.ignore();
-        cout << "Nhap xuat xu: "; cin.getline(xuatXu, 30);
-        cout << "Nhap gia ban: "; cin >> giaBan;
-    }
-    void xuat() {
-        cout << "Nhan hieu: " << nhanHieu << " | Hang SX: " << hangSanXuat << endl;
-        cout << "  - Kieu dang: " << kieuDang << " | Mau son: " << mauSon << endl;
-        cout << "  - Nam SX: "; namSanXuat.xuat(); cout << " | Xuat xu: " << xuatXu << endl;
-        cout << "  - Gia ban: " << giaBan << endl;
-    }
-    string getHangSanXuat() {
-        return string(hangSanXuat);
-    }
-    double getGiaBan() {
-        return giaBan;
-    }
-    int getNamSx() const {
-        return namSanXuat.year; 
-    }
-}; 
+/* 2. Lớp HANG_MM */
+class HANG_MM : public HANG {
+private:
+    string ChatLieu;
+    string KieuDang;
+    int SoLuong;
 
-int main() {
+public:
+    void Nhap() {
+        HANG::Nhap();
+        cout << "  - Nhap chat lieu: ";
+        getline(cin, ChatLieu);
+        cout << "  - Nhap kieu dang: ";
+        getline(cin, KieuDang);
+        cout << "  - Nhap so luong: ";
+        cin >> SoLuong;
+        cin.ignore();
+    }
+
+    void Xuat() {
+        HANG::Xuat();
+        cout << "  -> Chat lieu: " << ChatLieu << " | Kieu dang: " << KieuDang << " | So luong: " << SoLuong << endl;
+    }
+
+    int getSoLuong() { return SoLuong; }
+};
+
+/* 3. Lớp CUAHANG */
+class CUAHANG {
+private:
+    string MaCH;
+    string TenCH;
+    HANG_MM* x;
     int n;
-    cout << "Nhap so luong xe hoi: ";
-    cin >> n;
-    XeHoi *ds = new XeHoi[n];
-    
-    cout << " Nhap danh sach xe hoi ";
-    for (int i = 0; i < n; i++) {
-        cout << "\nNhap thong tin xe hoi thu " << i + 1 << ":\n";
-        (ds + i)->nhap();
+
+public:
+    CUAHANG() {
+        x = NULL;
+        n = 0;
     }
 
-cout << "Danh sach xe hoi vua nhap";
-for (int i = 0; i < n; i ++) {
-    (ds + i)->xuat();
-}
-
-cout << "Xe hoi cua Toyota ";
-bool foundToyota = false;
-for (int i = 0; i < n; i++) {
-    string hang = (ds + i)->getHangSanXuat();
-        if (hang == "Toyota" || hang == "toyota" || hang == "TOYOTA") {
-            (ds + i)->xuat();
-            foundToyota = true;
+    ~CUAHANG() {
+        if (x != NULL) {
+            delete[] x;
         }
-}
-if (!foundToyota) {
-        cout << "Khong co xe hoi nao cua hang Toyota.\n";
     }
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if ((ds + i)->getGiaBan() > (ds + j)->getGiaBan()) {
-                XeHoi temp = *(ds + i);
-                *(ds + i) = *(ds + j);
-                *(ds + j) = temp;
+
+    void Nhap() {
+        cout << "Nhap ma cua hang: ";
+        getline(cin, MaCH);
+        cout << "Nhap ten cua hang: ";
+        getline(cin, TenCH);
+        cout << "Nhap so luong mat hang (n): ";
+        cin >> n;
+        cin.ignore();
+
+        x = new HANG_MM[n];
+        for (int i = 0; i < n; i++) {
+            cout << "\n[Nhap mat hang thu " << i + 1 << "]\n";
+            x[i].Nhap();
+        }
+    }
+
+    void Xuat() {
+        cout << "THONG TIN CUA HANG";
+        cout << "Ma cua hang: " << MaCH << endl;
+        cout << "Ten cua hang: " << TenCH << endl;
+        cout << "--- Danh sach cac mat hang ---\n";
+        for (int i = 0; i < n; i++) {
+            cout << "Mat hang " << i + 1 << ":\n";
+            x[i].Xuat();
+        }
+    }
+
+    void doiTenCuaHang(string tenMoi) {
+        TenCH = tenMoi;
+    }
+
+    void xuatHangSoLuongLon() {
+        cout << "CAC MAT HANG CO SO LUONG > 25";
+        bool coHang = false;
+        for (int i = 0; i < n; i++) {
+            if (x[i].getSoLuong() > 25) {
+                x[i].Xuat();
+                coHang = true;
             }
         }
+        if (!coHang) {
+            cout << "Khong co mat hang nao co so luong > 25.\n";
+        }
     }
-    cout << "\n=== DANH SACH SAU KHI SAP XEP TANG DAN THEO GIA BAN ===\n";
-    for (int i = 0; i < n; i++) {
-        (ds + i)->xuat();
-    }
+};
 
-    delete[] ds;
+int main() {
+    CUAHANG ch;
+    ch.Nhap();
+    ch.Xuat();
+
+    ch.doiTenCuaHang("IVYMODA");
+
+    cout << "\n>>> Sau khi doi ten cua hang thanh IVYMODA <<<\n";
+    ch.Xuat();
+
+    ch.xuatHangSoLuongLon();
 
     return 0;
 }
